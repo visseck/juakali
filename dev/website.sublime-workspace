@@ -7,6 +7,14 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "desktop/index.html",
+			"settings":
+			{
+				"buffer_size": 37431,
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -86,8 +94,38 @@
 	"groups":
 	[
 		{
+			"selected": 0,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "desktop/index.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 37431,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								17600,
+								17681
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 13182.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
 			]
 		}
 	],
