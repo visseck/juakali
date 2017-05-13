@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+
+<style>
+
+label.solarField {
+	text-align: right;
+	width: 200px;
+}
+
+input.solarInput {
+	width: 130px;
+}
+.axis--x path {
+  display: none; 
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+</style>
+
+<html lang="en">
+<head>
+	<link rel="stylesheet" type="text/css" href="css/master.css"/>
+</head>
+<body>
+	<script src="js/jquery.js"></script>
+	<script src="js/d3js/d3.min.js"></script>
+	<script src="js/solarcalculator.js"></script>
+	<form action="" id="solarform" oninput="UpdateGraph()">
+		<label class="solarField">Monthly Usage:</label><input class="solarInput" id="powerUsage" min="1" style="padding-right:35px; text-align:right;" type="number"/><span style="margin-left:-35px;">KWH</span><BR/>
+		<label class="solarField">Monthly Bill:</label><input class="solarInput" id="monthlyBill" disabled="true" style="padding-right:27px; text-align:right;" type="text"/><span style="margin-left:-27px;">Ksh</span><BR/>
+		<label class="solarField">Setup:</label><input value="false" type="radio" id="gridTieType" name="setuptype" onchange="UpdateGraph()"> Grid Tie  <input onchange="UpdateGraph()" value="true" id="hybridType" type="radio" name="setuptype" checked> Hybrid<BR/>
+		<label class="solarField">Power Capacity:</label>
+		<select id="powerCapacityRange">
+			<option value="2000">2,000w</option>
+			<option value="5000">5,000w</option>
+			<option value="10000">10,000w</option>
+		</select><BR/>
+		<label class="solarField">Use Financing: </label><input type="checkbox" id="useFinancing" onchange="OnFinancing()"/>
+		<div id="financingDiv" style="opacity:0;">
+			<label class="solarField">Period:</label>
+			<select id="financePeriod">
+				<option value="12">12 mo</option>
+				<option value="24">24 mo</option>
+				<option value="36">36 mo</option>
+			</select>
+		</div>
+		<label class="solarField">System Cost:</label><input class="solarInput" disabled="true" id="systemCost" style="padding-right:27px; text-align:right;"/><span style="margin-left:-27px;">Ksh</span><BR/>
+		<label class="solarField">Usable KWH Generated:</label><input class="solarInput" type="number" id="solarKWHGenerated" disabled="true" style="padding-right:35px; text-align:right;"/><span style="margin-left:-35px;">KWH</span><BR/>
+		<label class="solarField">New Monthly Bill:</label><input class="solarInput" id="monthlyBillAfterSolar" disabled="true" style="padding-right:27px; text-align:right;"/><span style="margin-left:-27px;">Ksh</span><BR/>
+		<label class="solarField">You Save:</label><input class="solarInput" id="monthlySaving" disabled="true" style="padding-right:27px; text-align:right;"/><span style="margin-left:-27px;">Ksh</span><BR/>
+		<label class="solarField">Pays for itself in: </label><input class="solarInput" id="timeToRecover" disabled="true" style="padding-right:50px; text-align:right;"/><span style="margin-left:-50px;">months</span><BR/>
+	</form>
+
+	<script>
+		function MakeCurrencyString(currencyNumber)
+		{
+			currencyNumber = currencyNumber.toFixed(2);
+			currencyNumber = currencyNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+			return currencyNumber;
+		}
+
+		function GetSystemCost(power, hasBattery)
+		{
+			if (hasBattery == "false")
+			{
+				if (power == 2000) return 260000;
+				if (power == 5000) return 483000;
+				return 1015777;
+			}
+
+			if (power == 2000) return 630000;
+			if (power == 5000) return 1362924;
+			return 2333617;
+		}
+		function UpdateGraph()
+		{
+			var monthlyKWH = Math.max($("#powerUsage").val(), 0);
+			var monthlyCost = calculateCostFromKWH(monthlyKWH);
+			$("#monthlyBill").val(MakeCurrencyString(monthlyCost));
+			var powerCapacity = $("#powerCapacityRange").val();
+			var hasBattery = $('input[name=setuptype]:checked').val();
+			$("#systemCost").val(MakeCurrencyString(GetSystemCost(powerCapacity, hasBattery)));
+			var effectiveCapacity = calculateEffectiveCapacity(powerCapacity * 6 * 30 / 1000, hasBattery);
+			$("#solarKWHGenerated").val(effectiveCapacity);
+			var monthlyCostWithSolar = calculateCostFromKWH(monthlyKWH - effectiveCapacity);
+			$("#monthlyBillAfterSolar").val(MakeCurrencyString(monthlyCostWithSolar));
+			$("#monthlySaving").val(MakeCurrencyString(monthlyCost - monthlyCostWithSolar));
+			$("#timeToRecover").val(Math.round(GetSystemCost(powerCapacity, hasBattery) / (monthlyCost-monthlyCostWithSolar)));
+		}
+			function OnFinancing()
+			{
+				if ($("#useFinancing").is(":checked"))
+				{
+					$("#financingDiv").css({opacity: 0.0, visibility: "visible"}).animate({opacity: 1.0});
+				}
+				else
+				{
+					$("#financingDiv").css({opacity: 0.0, visibility: "visible"}).animate({opacity: 0.0}, 200); // css({opacity: }))
+				}
+				
+			}
+	</script>
+
+<!--	<script type="text/javascript">
+		var svg = d3.select("svg"),
+    	margin = {top: 20, right: 20, bottom: 30, left: 50},
+    	width = +svg.attr("width") - margin.left - margin.right,
+    	height = +svg.attr("height") - margin.top - margin.bottom,
+    	g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+		var data = [3, 6, 2, 7, 5, 2, 0, 3, 8, 9, 2, 5, 9, 3, 6, 3, 6, 2, 7, 5, 2, 1, 3, 8, 9, 2, 5, 9, 2, 7];
+
+
+var x = d3.scaleLinear()
+	.domain([0, data.length])
+	.range([0, width]);
+    
+
+var y = d3.scaleLinear()
+	.domain([0, 10])
+    .rangeRound([height, 0]);
+
+var line = d3.line()
+    .x(function(d, i) { return x(i); })
+    .y(function(d) { return y(d); });
+
+  g.append("g")
+      .attr("class", "axis axis--x")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x));
+
+  g.append("g")
+      .attr("class", "axis axis--y")
+      .call(d3.axisLeft(y))
+    .append("text")
+      .attr("fill", "#000")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", "0.71em")
+      .style("text-anchor", "end")
+      .text("Price ($)");
+
+  g.append("path")
+      .attr("class", "line")
+      .attr("d", line(data));		
+	</script> -->
+
+</body>
+</html>
