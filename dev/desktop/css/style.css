@@ -271,15 +271,15 @@ img,img:hover,img:focus{
 			padding:0px;
 			}
 		.address ul li{
-			font-size:14px;
-			color:#6e6e6e;
+			font-size:18px;
+			color:#8e8e8e;
 			font-family:"Cabin",sans-serif;
 			font-weight:normal;
 			display:inline;
 			line-height:18px;	
 			}	
 		.address ul li .fa{
-			color:#6e6e6e;
+			color:#8e8e8e;
 			font-size:16px;
 			line-height:41px;
 			margin-right:8px;
