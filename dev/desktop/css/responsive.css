@@ -185,12 +185,8 @@ left: 0;
 	right:40px;
 	
 }
-.wedo:nth-child(3){
-	margin-right:0px!important;
-}
 .wedo {
-    margin-right: 30px;
-    width: 230px;
+    padding-right: 30px;
 	margin-bottom:30px;
 }
 #our-news .wedo:nth-child(2){
@@ -486,7 +482,6 @@ left: 0;
 	
 }
 .wedo{
-	width:auto;
 	margin-right:0px;
 	margin-bottom:20px;
 }

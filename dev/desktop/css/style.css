@@ -995,13 +995,13 @@ figure.effect-layla:hover figcaption::after {
   }
    .wedo{
 	margin-right:30px;
-	width:270px;
+	width:370px;
  }
  #our-news .wedo{
 	margin-right:30px;
 	width:370px;
  }
- .wedo:nth-child(4){
+ .wedo:nth-child(3){
 	margin-right:0px !important;
  } 
   #our-news .wedo:nth-child(3){
